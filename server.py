@@ -2,34 +2,30 @@
 from socket import *
 import sys  # In order to terminate the program
 
+serverPort = 8080
 serverSocket = socket(AF_INET, SOCK_STREAM)
-# Prepare a sever socket
-# Fill in start
-# Fill in end
+serverSocket.bind(('127.0.0.1', serverPort))
+serverSocket.listen(1)  # handle one connection at a time
 while True:
-    # Establish the connection
     print('Ready to serve...')
-    connectionSocket, addr =  # Fill in start              #Fill in end
+    connectionSocket, addr = serverSocket.accept()
     try:
-        message =  # Fill in start          #Fill in end
+        message = connectionSocket.recv(1024).decode()
         filename = message.split()[1]
         f = open(filename[1:])
-        outputdata =  # Fill in start       #Fill in end
-        # Send one HTTP header line into socket
-        # Fill in start
-        # Fill in end
-        # Send the content of the requested file to the client
+        outputdata = f.read()
+        f.close()
+        connectionSocket.send('HTTP/1.0 200 OK\r\n'.encode())
+        connectionSocket.send("Content-Type: text/html\r\n\r\n".encode())
         for i in range(0, len(outputdata)):
             connectionSocket.send(outputdata[i].encode())
         connectionSocket.send("\r\n".encode())
 
         connectionSocket.close()
     except IOError:
-# Send response message for file not found
-# Fill in start
-# Fill in end
-# Close client socket
-# Fill in start
-# Fill in end
-serverSocket.close()
-sys.exit()  # Terminate the program after sending the corresponding data
+        connectionSocket.send('HTTP/1.0 404 NOT FOUND\r\n'.encode())
+        connectionSocket.send("Content-Type: text/html\r\n\r\n".encode())
+        connectionSocket.send('<html><body><h1>404</body></html>'.encode())
+        connectionSocket.close()
+    serverSocket.close()
+    sys.exit()  # Terminate the program after sending the corresponding data
