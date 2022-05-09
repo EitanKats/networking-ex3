@@ -4,7 +4,7 @@ import sys  # In order to terminate the program
 
 serverPort = 8080
 serverSocket = socket(AF_INET, SOCK_STREAM)
-serverSocket.bind(('127.0.0.1', serverPort))
+serverSocket.bind(('', serverPort))  # '' == '0.0.0.0'
 serverSocket.listen(1)  # handle one connection at a time
 while True:
     print('Ready to serve...')
